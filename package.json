@@ -1,0 +1,14 @@
+{
+  "name": "screen-morph",
+  "version": "1.0.0",
+  "description": "One screen turning into another, as a WebGL shader.",
+  "type": "module",
+  "main": "screen-morph.js",
+  "exports": "./screen-morph.js",
+  "files": ["screen-morph.js"],
+  "keywords": ["webgl", "shader", "transition", "morph", "screen", "animation"],
+  "homepage": "https://svorobovich.com/ui/screen-morph/",
+  "repository": { "type": "git", "url": "git+https://github.com/svorobovichtom/screen-morph.git" },
+  "author": "Tom Svorobovich (https://svorobovich.com)",
+  "license": "MIT"
+}

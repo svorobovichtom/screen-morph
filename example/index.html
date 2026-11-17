@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Screen morph example</title>
+    <style>
+      html {
+        color-scheme: dark;
+        background: #000;
+        color: #f3f3ef;
+        font: 15px/1.4 system-ui, sans-serif;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+        gap: 1.25rem;
+        min-height: 100svh;
+        margin: 0;
+        padding: 2rem 1rem;
+        box-sizing: border-box;
+      }
+
+      canvas {
+        display: block;
+        width: min(20rem, 80vw);
+        aspect-ratio: 804 / 1741;
+        border-radius: 2.25rem;
+      }
+
+      label {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        width: min(20rem, 80vw);
+      }
+
+      input {
+        flex: 1;
+        accent-color: #f3f3ef;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas></canvas>
+    <label>
+      <span>Progress</span>
+      <input type="range" min="0" max="1000" value="0" />
+    </label>
+
+    <script type="module">
+      import { screenMorph } from "../screen-morph.js";
+
+      const load = (src) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+
+      const screens = await Promise.all(["wishlist.webp", "paywall.webp", "wallet.webp"].map(load));
+      const canvas = document.querySelector("canvas");
+      const range = document.querySelector("input");
+
+      // the slider runs through all three: 0..1 is the first pair, 1..2 the second
+      let pair = -1;
+      const morph = screenMorph(canvas, { from: screens[0], to: screens[1] });
+      const show = (t) => {
+        const k = Math.min(Math.floor(t), screens.length - 2);
+        if (k !== pair) {
+          pair = k;
+          morph.setImages(screens[k], screens[k + 1]);
+          morph.setSeed(7 + k * 3);
+        }
+        morph.set(t - k);
+      };
+
+      range.max = String((screens.length - 1) * 1000);
+      range.addEventListener("input", () => show(range.valueAsNumber / 1000));
+      window.morph = morph; // for poking at it from the console
+    </script>
+  </body>
+</html>
